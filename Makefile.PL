@@ -27,7 +27,14 @@ my %more_items = (
 
 map { $hash{$_} = $more_items{$_} } keys %more_items;
 
-sub MY::postamble {  pdlpp_postamble($matlab_package)};
+sub MY::postamble {
+  # These are #included, so make now knows to rebuild the .o when these .c
+  # change
+  "Matlab.o: extra_matio.c convert_matvar_pdl.c\n" .
+    pdlpp_postamble($matlab_package)
+  }
+
+
 
 
 WriteMakefile( %hash );
