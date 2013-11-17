@@ -1,0 +1,29 @@
+From: Dima Kogan <dima@secretsauce.net>
+Date: Sat, 16 Nov 2013 21:52:51 -0800
+Subject: Make now knows about a source dependency and can rebuild
+ intelligently
+
+---
+ Makefile.PL | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile.PL b/Makefile.PL
+index b765d42..2f1c35f 100644
+--- a/Makefile.PL
++++ b/Makefile.PL
+@@ -27,7 +27,14 @@ my %more_items = (
+ 
+ map { $hash{$_} = $more_items{$_} } keys %more_items;
+ 
+-sub MY::postamble {  pdlpp_postamble($matlab_package)};
++sub MY::postamble {
++  # These are #included, so make now knows to rebuild the .o when these .c
++  # change
++  "Matlab.o: extra_matio.c convert_matvar_pdl.c\n" .
++    pdlpp_postamble($matlab_package)
++  }
++
++
+ 
+ 
+ WriteMakefile( %hash );

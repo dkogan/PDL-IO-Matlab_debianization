@@ -1,0 +1,82 @@
+From: Dima Kogan <dima@secretsauce.net>
+Date: Sat, 16 Nov 2013 20:30:41 -0800
+Subject: I use the libmatio in Debian, so I don't build the one here
+
+---
+ Makefile.PL | 33 ++++-----------------------------
+ matlab.pd   |  2 +-
+ 2 files changed, 5 insertions(+), 30 deletions(-)
+
+diff --git a/Makefile.PL b/Makefile.PL
+index 5feb67e..b765d42 100644
+--- a/Makefile.PL
++++ b/Makefile.PL
+@@ -5,15 +5,7 @@ use ExtUtils::MakeMaker;
+ use PDL::Core::Dev;
+ 
+ # Makefile has targets 'cleanall' and 'distcleanall'.
+-# These do clean and distclean in both module distribution
+-# toplevel and in $matio_top_level.
+-
+-my $matio_top_level = './matio-1.5.0';
+-
+-if ( not -e "$matio_top_level/src/matio_pubconf.h" ) {
+-    print "Makefile.PL: running configure in $matio_top_level\n";
+-    system "cd $matio_top_level; ./configure";
+-}
++# These do clean and distclean in module distribution
+ 
+ my $matlab_package = ['matlab.pd', 'Matlab', 'PDL::IO::Matlab'];
+ my %hash = pdlpp_stdargs($matlab_package);
+@@ -24,35 +16,18 @@ my %more_items = (
+     VERSION_FROM        => 'matlab.pd',
+     ABSTRACT_FROM       => 'matlab.pd',
+     PL_FILES            => {},
+-    OBJECT  =>  ' Matlab.o matio_obj.o ' ,
+-    LIBS => [ ' -lz -lhdf5 ' ],
++    LIBS => [ '-lmatio' ],
+     PREREQ_PM => {
+         'Test::More' => 0,
+         'PDL' => 0,
+     },
+     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+-    # note the file below that matio Makefile fails to clean.
+-    clean               => { FILES => ' PDL-IO-Matlab-* Matlab.* tst.mat testf.mat ' . 
+-                                 $matio_top_level . '/test/atconfig' },
++    clean               => { FILES => ' PDL-IO-Matlab-* Matlab.* tst.mat testf.mat ' },
+ );
+ 
+ map { $hash{$_} = $more_items{$_} } keys %more_items;
+ 
+-#	cd $matio_top_level; ./configure
+-
+-sub MY::postamble {   qq{
+-
+-matio_obj.o:
+-	cd $matio_top_level; cd src; \$(MAKE)
+-	ld -r -o matio_obj.o $matio_top_level/src/.libs/*.o
+-
+-cleanall: clean
+-	cd $matio_top_level; \$(MAKE) clean
+-
+-distcleanall: distclean
+-	cd $matio_top_level; \$(MAKE) distclean
+-
+-}  . pdlpp_postamble($matlab_package)};
++sub MY::postamble {  pdlpp_postamble($matlab_package)};
+ 
+ 
+ WriteMakefile( %hash );
+diff --git a/matlab.pd b/matlab.pd
+index 386774a..d816156 100644
+--- a/matlab.pd
++++ b/matlab.pd
+@@ -5,7 +5,7 @@ use warnings;
+ our $VERSION = '0.005';
+ pp_setversion("'$VERSION'");
+ 
+-my $Matio_src = 'matio-1.5.0/src';
++my $Matio_src = '/usr/include';
+ 
+ # This works nicely, but I am not using it for anything
+ my ($MAT_FT_MAT73,$MAT_FT_MAT5,$MAT_FT_MAT4) = (0,1,2);
