@@ -1,0 +1,21 @@
+Source: libpdl-io-matlab-perl
+Section: perl
+Priority: optional
+Maintainer: Debian Perl Group <pkg-perl-maintainers@lists.alioth.debian.org>
+Uploaders: Dima Kogan <dima@secretsauce.net>
+Build-Depends: debhelper (>= 9.20120312),
+ perl,
+# versioned pdl dep to get dh_pdl and PDL_Indx
+ pdl (>= 1:2.007-2),
+ libmatio-dev ( >= 1.5.0 )
+Standards-Version: 3.9.4
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-perl/packages/libpdl-io-matlab-perl.git
+Vcs-Git: git://anonscm.debian.org/pkg-perl/packages/libpdl-io-matlab-perl.git
+Homepage: https://github.com/jlapeyre/PDL-IO-Matlab/
+
+Package: libpdl-io-matlab-perl
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${perl:Depends}, ${pdl:Depends}
+Description: Reads/writes Matlab format data files in the perl data language
+ This module provides routines to read and write pdls to and from data files in
+ Matlab formats. Both functional and OO interface are provided.
